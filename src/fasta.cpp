@@ -2,7 +2,7 @@
 
 //fonction qui lit une fichier fasta qui ne contient qu'un seul prot et qui renvoie une objet de la structure Prot
 //qui servira à la représenter
-Prot getIdandsequence(string filefasta){
+Prot getIdandsequence(const string& filefasta){
     ifstream fichier(filefasta);
     
     if (!fichier.good()) {
@@ -20,6 +20,8 @@ Prot getIdandsequence(string filefasta){
             sequence += ligne;     // on actualise le sequence car elle prend plusieurs lignes
         }
     }
+    fichier.close();
+    sequence = sequence.substr(0, sequence.find(' '));
     Prot query;
     query.id = id;
     query.sequence = sequence;

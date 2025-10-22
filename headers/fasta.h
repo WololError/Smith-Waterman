@@ -10,6 +10,6 @@ struct Prot {
     string sequence; //on stocke le séquence ds un string pr l'instant, reste à voir quelle structure sera intéressante pr l'algoritme de Smith-Waterman
 };
 
-Prot getIdandsequence(string files);
+Prot getIdandsequence(const string& files);
 
 #endif

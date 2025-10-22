@@ -1,5 +1,5 @@
 #include "..\headers\blast.h"
-
+vector<char> Aminoacid = {'-', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z', 'U', '*', 'O', 'J'};
 //fonction qui inverse un entier sur 32bits vu que la plupart des données sont en big endian et que le processeur s'attend à du little endian
 uint32_t swap(uint32_t val) {
     return ((((val) & 0xff000000) >> 24)|
@@ -10,7 +10,7 @@ uint32_t swap(uint32_t val) {
 
 //fonction qui return un objet dataPin contenant les info imporant d'un fichier .pin 
 //( nb de séquence et offsets pr les fichier .psd et .phr )
-dataPin read_pin(const string& filepin) {
+dataPin read_pin(const string filepin) {
     // ouvre le fichier en lecture binaire
     ifstream file(filepin, ios::binary);
     if (!file) throw runtime_error("Impossible d'ouvrir le fichier");
@@ -79,6 +79,53 @@ dataPin read_pin(const string& filepin) {
         pindata.header_offsets[i] = swap(pindata.header_offsets[i]);
         pindata.sequence_offsets[i] = swap(pindata.sequence_offsets[i]);
     }
-    
+    file.close();
     return pindata;
+}
+
+string read_sequence(const string filepsq, const int a,const int b){
+    ifstream file(filepsq, ios::binary);
+    if (!file) throw runtime_error("Impossible d'ouvrir le fichier");
+    
+    file.seekg(a, ios::cur);
+    int size = llabs(b - a) ;
+    string sequence;
+    char byte;
+    int value;
+    //on lit byte par byte puis on convertie les valeurs en lettrez avec le vector Aminoacid
+    for(int i = 0; i < size - 1; i++){
+        file.read(&byte, 1);
+        value = static_cast<int>(static_cast<unsigned char>(byte));
+        sequence += Aminoacid[value];
+    }
+    file.close();
+    return sequence;
+}
+
+string read_header(const string phrfile, int a, int b) {
+    ifstream file(phrfile, ios::binary);
+    if (!file) throw runtime_error("Impossible d'ouvrir le fichier .phr");
+
+    // Aller à l'offset de début
+    file.seekg(a);
+    int size = b - a;
+    vector<unsigned char> buffer(size);
+    file.read(reinterpret_cast<char*>(buffer.data()), size);
+    file.close();
+
+    string header;
+    for (size_t i = 0; i < buffer.size(); i++) {
+        if (buffer[i] == 0x1A) { // 0x1A = VisibleString
+            // longueur du texte (1 octet)
+            int length = buffer[i + 1];
+            string text;
+            for (int j = 0; j < length; j++) {
+                text += static_cast<char>(buffer[i + j + 2]);
+            }
+            // on ajoute ce texte à la sortie
+            header += text + " ";
+        }
+    }
+    header = header.substr(0, header.find(' '));
+    return header;
 }

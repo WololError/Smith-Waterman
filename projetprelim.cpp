@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <chrono>
 #include "headers\fasta.h"
 #include "headers\blast.h"
 
@@ -12,8 +13,21 @@ int main(int argc, char** argv){
     string phrfile = string(argv[2]) + ".phr";
 
     Prot query = getIdandsequence(fastafile);
-    dataPin datapin = read_pin(pinfile);
+    dataPin pindata = read_pin(pinfile);
 
-    cout << datapin.numberOfprot << endl;
+    string seq;
+    auto start = std::chrono::high_resolution_clock::now();
+    for(int i = 0; i < pindata.sequence_offsets.size() - 1 ; i++){
+
+        seq = read_sequence(psqfile, pindata.sequence_offsets[i], pindata.sequence_offsets[i + 1]);
+        if (seq == query.sequence){
+            cout << "protein Trouvee !" << " i = " << i << endl;
+            cout << read_header(phrfile,pindata.header_offsets[i],pindata.header_offsets[i + 1]) << endl;
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> elapsed = end - start;
+            std::cout << "Temps ecoule : " << elapsed.count() << " secondes\n";
+            break;
+        }
+    }
     return 0;
 }

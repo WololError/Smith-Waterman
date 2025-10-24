@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 using namespace std;
-//structure qui représente une protein
+//structure qui représente une protéine
 struct Prot {
     string id;
     string sequence; //on stocke le séquence ds un string pr l'instant, reste à voir quelle structure sera intéressante pr l'algoritme de Smith-Waterman

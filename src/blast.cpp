@@ -1,4 +1,6 @@
-#include "..\headers\blast.h"
+#include "../headers/blast.h"
+
+
 vector<char> Aminoacid = {'-', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z', 'U', '*', 'O', 'J'};
 //fonction qui inverse un entier sur 32bits vu que la plupart des données sont en big endian et que le processeur s'attend à du little endian
 uint32_t swap(uint32_t val) {

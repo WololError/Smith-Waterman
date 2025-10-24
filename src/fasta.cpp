@@ -13,7 +13,7 @@ Prot getIdandsequence(const string& filefasta){
 
     string ligne, id, sequence;
     while(getline(fichier, ligne)){
-        cout << ligne << "[]]]]]]]]" << endl;
+        
         if (ligne[0] == '>'){
             id = ligne.erase(0,1);  // on récupère l'id
         }

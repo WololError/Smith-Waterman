@@ -23,3 +23,7 @@ blosum/
 
 # .exe files
 *.exe
+
+# .txt files
+*.txt
+

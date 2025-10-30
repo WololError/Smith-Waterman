@@ -1,7 +1,6 @@
 #include "../headers/blast.h"
-
-
 vector<char> Aminoacid = {'-', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z', 'U', '*', 'O', 'J'};
+
 //fonction qui inverse un entier sur 32bits vu que la plupart des données sont en big endian et que le processeur s'attend à du little endian
 uint32_t swap(uint32_t val) {
     return ((((val) & 0xff000000) >> 24)|
@@ -12,7 +11,7 @@ uint32_t swap(uint32_t val) {
 
 //fonction qui return un objet dataPin contenant les info imporant d'un fichier .pin 
 //( nb de séquence et offsets pr les fichier .psd et .phr )
-dataPin read_pin(const string filepin) {
+dataPin read_pin(const string& filepin) {
     // ouvre le fichier en lecture binaire
     ifstream file(filepin, ios::binary);
     if (!file) throw runtime_error("Impossible d'ouvrir le fichier");
@@ -24,7 +23,7 @@ dataPin read_pin(const string filepin) {
     //encodé en 32 bits selon la documentation officiel.
     int32_t version, db_type, title_len, timestamp_len, n_sequences,max_seq_len;
 
-    //on lit la version, on se retrouve donc aprés les 4 1er bytes
+    //on lit la version, on se retrouve donc aprés les 4 1er bytes, on fait reinterpret_cast<char*> car .read attend par défaut un char*
     file.read(reinterpret_cast<char*>(&version), 4);
 
     //on lit la type, on se retrouve donc aprés le 8 premiers bytes
@@ -53,7 +52,6 @@ dataPin read_pin(const string filepin) {
     //on lit le nb de séquence et on l'inverse pr le récuperer plus tard
     file.read(reinterpret_cast<char*>(&n_sequences), 4);
     n_sequences = swap(n_sequences);
-
     //on skip le nb de résidue qui est encodé sur 64bits, il ne nous servira pas
     int64_t residue_count;
     file.read(reinterpret_cast<char*>(&residue_count), 8);
@@ -70,10 +68,10 @@ dataPin read_pin(const string filepin) {
     pindata.sequence_offsets.resize(n_sequences + 1);
 
     // On lit les offsets des headers, (n_sequences + 1) valeurs de 4 octets chacune selon la documentation
-    file.read(reinterpret_cast<char*>(pindata.header_offsets.data()),
+    file.read(reinterpret_cast<char*>(&pindata.header_offsets[0]),
               (n_sequences + 1) * 4);
     //de même pr les séquences
-    file.read(reinterpret_cast<char*>(pindata.sequence_offsets.data()),
+    file.read(reinterpret_cast<char*>(&pindata.sequence_offsets[0]),
               (n_sequences + 1) * 4);
 
     // on inverse pr les même raisons que title_len
@@ -81,13 +79,12 @@ dataPin read_pin(const string filepin) {
         pindata.header_offsets[i] = swap(pindata.header_offsets[i]);
         pindata.sequence_offsets[i] = swap(pindata.sequence_offsets[i]);
     }
-    file.close();
     return pindata;
 }
 
-string read_sequence(const string filepsq, const int a,const int b){
+string read_sequence(const string& filepsq, const int a,const int b){
     ifstream file(filepsq, ios::binary);
-    if (!file) throw runtime_error("Impossible d'ouvrir le fichier");
+    if (!file) throw runtime_error("Impossible d'ouvrir le fichier psq");
     
     file.seekg(a, ios::cur);
     int size = llabs(b - a) ;
@@ -104,7 +101,8 @@ string read_sequence(const string filepsq, const int a,const int b){
     return sequence;
 }
 
-string read_header(const string phrfile, int a, int b) {
+//fonction qui lit le fichier phr et qui renvoie l'identifint de la prot entre l'offset a et b
+string read_header(const string& phrfile, int a, int b) {
     ifstream file(phrfile, ios::binary);
     if (!file) throw runtime_error("Impossible d'ouvrir le fichier .phr");
 
@@ -112,7 +110,7 @@ string read_header(const string phrfile, int a, int b) {
     file.seekg(a);
     int size = b - a;
     vector<unsigned char> buffer(size);
-    file.read(reinterpret_cast<char*>(buffer.data()), size);
+    file.read(reinterpret_cast<char*>(&buffer[0]), size);
     file.close();
 
     string header;

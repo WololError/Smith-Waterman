@@ -17,7 +17,7 @@ struct dataPin {
 };
 
 uint32_t swapbytes(uint32_t val);
-dataPin read_pin(const string pin_path);
-string read_sequence(const string filepsq, const int a, const int b);
-string read_header(const string filephr, const int a, const int b);
+dataPin read_pin(const string& pin_path);
+string read_sequence(const string& filepsq, const int a, const int b);
+string read_header(const string& filephr, const int a, const int b);
 #endif

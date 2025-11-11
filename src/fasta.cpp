@@ -1,6 +1,4 @@
 #include "../headers/fasta.h"
-
-
 //fonction qui lit une fichier fasta qui ne contient qu'un seul prot et qui renvoie une objet de la structure Prot
 //qui servira à la représenter
 Prot getIdandsequence(const string& filefasta){

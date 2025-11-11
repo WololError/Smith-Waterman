@@ -1,4 +1,5 @@
 #include "../headers/blast.h"
+
 vector<char> Aminoacid = {'-', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z', 'U', '*', 'O', 'J'};
 
 //fonction qui inverse un entier sur 32bits vu que la plupart des données sont en big endian et que le processeur s'attend à du little endian
@@ -82,11 +83,8 @@ dataPin read_pin(const string& filepin) {
     return pindata;
 }
 
-string read_sequence(const string& filepsq, const int a,const int b){
-    ifstream file(filepsq, ios::binary);
-    if (!file) throw runtime_error("Impossible d'ouvrir le fichier psq");
-    
-    file.seekg(a, ios::cur);
+string read_sequence(ifstream& file, const int a,const int b){
+    file.seekg(a, ios::beg);
     int size = llabs(b - a) ;
     string sequence;
     char byte;
@@ -97,7 +95,6 @@ string read_sequence(const string& filepsq, const int a,const int b){
         value = static_cast<int>(static_cast<unsigned char>(byte));
         sequence += Aminoacid[value];
     }
-    file.close();
     return sequence;
 }
 

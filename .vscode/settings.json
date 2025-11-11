@@ -61,5 +61,6 @@
         "variant": "cpp",
         "stdlib.h": "c",
         "fasta.h": "c"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

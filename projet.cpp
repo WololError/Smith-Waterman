@@ -18,7 +18,7 @@ int main(int argc, char** argv){
     int GOP = atoi(argv[4]); // GOP = Gap Open Penalty
     int GEP = atoi(argv[5]); // GEP = Gap Extension Penalty
 
-    Prot query = getIdandsequence(fastafile);
+    query query = getIdandsequence(fastafile);
     dataPin pindata = read_pin(pinfile);
     Blosum scoring(blosumfile);
     vector<Protein> proteins = Protein::initProtlist(phrfile, psqfile, pindata); 

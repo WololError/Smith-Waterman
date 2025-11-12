@@ -5,6 +5,7 @@
 #include "headers/fasta.h"
 #include "headers/blast.h"
 #include "headers/blosum.h"
+#include "headers/Protein.h"
 
 int main(int argc, char** argv){
 
@@ -20,6 +21,7 @@ int main(int argc, char** argv){
     Prot query = getIdandsequence(fastafile);
     dataPin pindata = read_pin(pinfile);
     Blosum scoring(blosumfile);
+    vector<Protein> proteins = Protein::initProtlist(phrfile, psqfile, pindata); 
 
     //scoring.printMatrix();
     cout << scoring.Score('K', 'B') << endl;

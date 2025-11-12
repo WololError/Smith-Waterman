@@ -1,8 +1,7 @@
 all: projet
 
 projetprelim: projetprelim.cpp
-	g++ projetprelim.cpp src/fasta.cpp src/blast.cpp -o projetprelim
-	./projetprelim query/P00533.fasta database/uniprot_sprot.fasta
+	g++ projetprelim.cpp src/fasta.cpp src/blast.cpp src/Protein.cpp -o projetprelim
 
 projet: projet.cpp
 	g++ projet.cpp src/fasta.cpp src/blast.cpp src/blosum.cpp -o projet

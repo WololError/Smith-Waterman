@@ -99,16 +99,11 @@ string read_sequence(ifstream& file, const int a,const int b){
 }
 
 //fonction qui lit le fichier phr et qui renvoie l'identifint de la prot entre l'offset a et b
-string read_header(const string& phrfile, int a, int b) {
-    ifstream file(phrfile, ios::binary);
-    if (!file) throw runtime_error("Impossible d'ouvrir le fichier .phr");
-
-    // Aller à l'offset de début
+string read_header(ifstream& file, const int a, const int b) {
     file.seekg(a);
     int size = b - a;
     vector<unsigned char> buffer(size);
     file.read(reinterpret_cast<char*>(&buffer[0]), size);
-    file.close();
 
     string header;
     for (size_t i = 0; i < buffer.size(); i++) {

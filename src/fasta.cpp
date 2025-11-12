@@ -21,9 +21,9 @@ Prot getIdandsequence(const string& filefasta){
         }
     }
     fichier.close();
-    sequence = sequence.substr(0, sequence.find(' '));
     Prot query;
     query.id = id;
     query.sequence = sequence;
+    cout << sequence << endl;
     return query;
 }

@@ -1,3 +1,6 @@
+#ifndef PROTEIN_H
+#define PROTEIN_H
+
 #include <string>
 #include <vector>
 #include "blast.h"
@@ -12,7 +15,8 @@ private:
 
 public:
     static vector<Protein> initProtlist(const string& phrfile, const string& psqfile, const dataPin pin);
-    string getseq();
-    string getid();
+    string getseq() const;
+    string getid() const;
 };
 
+#endif

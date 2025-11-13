@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include "Protein.h"
 using namespace std;
 
 //structure qui représente une protéine
@@ -13,4 +14,5 @@ struct query {
 };
 
 query getIdandsequence(const string& files);
+void findquery(const query q, const vector<Protein> prot);
 #endif

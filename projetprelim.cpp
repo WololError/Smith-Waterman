@@ -15,21 +15,22 @@ int main(int argc, char** argv){
 
     query query = getIdandsequence(fastafile);
     dataPin pindata = read_pin(pinfile);
-    auto start = std::chrono::high_resolution_clock::now();    
+
+    //CREATION DU VECTOR DE PROT
+    auto start = std::chrono::high_resolution_clock::now();
+
     vector<Protein> proteins = Protein::initProtlist(phrfile, psqfile, pindata); 
+
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = end - start;
     std::cout << "vector crée en : " << elapsed.count() << " secondes\n";
 
-    auto startp = std::chrono::high_resolution_clock::now(); 
-    for(int i = 0; i < proteins.size(); i++){
-        if (query.sequence == proteins[i].getseq()){
-            cout << proteins[i].getid() << endl;
 
-            
-            break;
-        }
-    }
+    //RECHERCHE DU QUERY DS LE VECTOR DE PROT
+    auto startp = std::chrono::high_resolution_clock::now(); 
+
+    findquery(query, proteins);
+
     auto endp = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsedp = endp - startp;
     std::cout << "protein trouvé en : " << elapsedp.count() << " secondes\n";

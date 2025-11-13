@@ -23,10 +23,10 @@ vector<Protein> Protein::initProtlist(const string& phrfile, const string& psqfi
     return proteins;
 }
 
-string Protein::getseq(){
+string Protein::getseq() const{
     return this->sequence;
 }
 
-string Protein::getid(){
+string Protein::getid() const{
     return this->id;
 }

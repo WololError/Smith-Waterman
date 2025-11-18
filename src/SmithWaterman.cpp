@@ -29,7 +29,7 @@ vector<vector<int>> SWMatrix(int query_len, const query base,
 	vector<vector<int>> H(query_len + 1, vector<int>(prot_len + 1, 0));
 	
 	int gap_len = 0;
-	int gap_penalty = gap_open_penalty + gap_extension_penalty(len);
+	int gap_penalty = gap_open_penalty + gap_extension_penalty * gap_len;
 	// Application de la formule de récurrence
 	for (int i = 1;  i <= query_len; i++)
 	{

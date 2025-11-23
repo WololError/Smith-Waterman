@@ -49,6 +49,7 @@ priority_queue<Protein> Protein::initProtqueue(const query& q, Blosum& blosum, s
         P.sequence = read_sequence(psq, pin.sequence_offsets[i], pin.sequence_offsets[i + 1]);
         P.sw_score = SWmatrix(q, P, blosum, GEP, GOP);
         
+        cout << P.id + " " << P.sw_score << endl;
         pq.push(P);
     }
 

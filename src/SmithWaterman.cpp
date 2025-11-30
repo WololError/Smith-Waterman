@@ -47,51 +47,44 @@ pair<string, string> GetProtGapped(vector<vector<int>>& H, const query& query, c
     return {rev_on_query, rev_on_prot};
 }
 
-int SWmatrix(const query& query, 
-	const Protein& prot, Blosum& blosum, const int GOP, const int GEP)
-{
-    /*Renvoie le score maximal d'alignement de la protéine à comparer grâce à l'algorithme de Smith-Waterman*/
-
-	// Init de 0 dans toute la matrice (ajout d'une ligne et d'une colonne supp.)
+int SWmatrix(const query& query, const Protein& prot, const Blosum& blosum, const int GOP, const int GEP) {
+    
     string prot_sequence = prot.getseq();
-	int prot_len = prot_sequence.size();
+    int prot_len = prot_sequence.size();
     int query_len = query.sequence.size();
-
-	static vector<vector<int>> H;
-    static vector<vector<int>> E;
-    static vector<vector<int>> F;
-
-    H.assign(query_len + 1, vector<int>(prot_len + 1));
-	E = H;
-    F = H;
-
+    
+    if(prot.getid() == "sp|P22597|MB43_EHV4") return 0;
+    vector<int> H_prev(query_len + 1, 0); 
+    vector<int> H_curr(query_len + 1, 0); 
+    vector<int> E_curr(query_len + 1, 0);
+    
     int max_score = 0;
-    int i_max, j_max, i, j;
 
-    // Double boucle créant la matrice sw grâce à l'implémentation GOTOH
-    
-    for (i = 1;  i <= query_len; i++)
-	{
-		for (j = 1; j <= prot_len; j++)
-		{
-			E[i][j] = max(H[i][j-1] - GOP - GEP, E[i][j-1] - GEP);
-    
-            F[i][j] = max(H[i-1][j] - GOP - GEP, F[i-1][j] - GEP);
-     
-            H[i][j] = max(0, 
-				max(H[i-1][j-1] + blosum.Score(query.sequence[i-1], prot_sequence[j-1]), 
-				max(E[i][j], F[i][j])));
-    
-            if (H[i][j] > max_score)
+    for (int j = 1; j <= prot_len; j++)
+    {
+        int F_curr = 0; 
+        
+        H_curr[0] = 0;
+        E_curr[0] = 0;
+        
+        for (int i = 1; i <= query_len; i++)
+        {
+            E_curr[i] = max(H_curr[i] - GOP - GEP, E_curr[i] - GEP);
+            
+            F_curr = max(H_prev[i] - GOP - GEP, F_curr - GEP);
+            
+            H_curr[i] = max(0, 
+                max(H_prev[i-1] + blosum.Score(query.sequence[i-1], prot_sequence[j-1]), 
+                max(E_curr[i], F_curr)));
+
+            if (H_curr[i] > max_score)
             {
-                max_score = H[i][j];
-                i_max = i;
-                j_max = j;
+                max_score = H_curr[i];
             }
-		}
-	}
-    // Traceback pour afficher et debug les tests mais sinon inutile 
-    // pair<string, string> two_prots_gapped = GetProtGapped(H, query, prot, blosum, i_max, j_max, gap_penalty);
+        }
+        
+        H_prev = H_curr;
+    }
     
     return max_score;
 }

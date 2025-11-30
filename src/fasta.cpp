@@ -28,7 +28,7 @@ query getIdandsequence(const string& filefasta){
 }
 
 void findquery(const query q, const vector<Protein> v){
-    for(int i = 0; i < v.size(); i++){
+    for(long unsigned int i = 0; i < v.size(); i++){
         if (q.sequence == v[i].getseq()){
             cout << v[i].getid() << endl; 
             break;

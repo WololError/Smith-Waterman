@@ -29,11 +29,16 @@ int main(int argc, char** argv){
     
     // cout << SWmatrix(query, fake_prot, scoring, GOP, GEP) << endl;
 
-    
-    priority_queue<Protein> pq = Protein::initProtqueue(query, scoring, phrfile, psqfile, pindata, GEP, GOP);
-    Protein::print20best(pq);
+    auto start = std::chrono::high_resolution_clock::now();
 
+    vector<Protein> best20Prot = Protein::createVector(phrfile, psqfile, pindata, query,scoring, GEP, GOP);
 
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end - start;
+    cout << '\a';
+    std::cout << "vector crée en : " << elapsed.count() << " secondes\n";
+
+    Protein::printbetter(best20Prot);
 
     return 0;
 }

@@ -71,6 +71,7 @@ void Protein::print20best(priority_queue<Protein>& pq){
         pq.pop();
     }
 }
+
 void Protein::computeSW(int start, int end, const query& query, const Blosum& blosum, const string& phrfile, const string& psqfile, const dataPin& pin, int GEP, int GOP, priority_queue<Protein>& thread_results) {
     const int TOP_K = 20;
     ifstream phr(phrfile, ios::binary);
@@ -83,7 +84,7 @@ void Protein::computeSW(int start, int end, const query& query, const Blosum& bl
         P.id = read_header(phr, pin.header_offsets[i], pin.header_offsets[i + 1]);
         P.sequence = read_sequence(psq, pin.sequence_offsets[i], pin.sequence_offsets[i + 1]);
         P.sw_score = SWmatrix(query, P, blosum, GEP, GOP);
-
+        cout << P.id << "  " << P.sw_score << endl;
         if (thread_results.size() < TOP_K) {
             thread_results.push(move(P));
         } else if (P.sw_score > thread_results.top().sw_score) {
@@ -93,112 +94,62 @@ void Protein::computeSW(int start, int end, const query& query, const Blosum& bl
     }
 }
 
-vector<Protein> Protein::createVector(const string& phrfile, const string& psqfile, const dataPin& pin, const query& query, const Blosum& blosum, int GEP, int GOP) {
+vector<Protein> Protein::createVector(const string& phrfile, const string& psqfile, const dataPin& pin, const query& query, Blosum& blosum, int GEP, int GOP) {
     unsigned int num_threads = thread::hardware_concurrency();
     int total_proteins = pin.numberOfprot;
     int chunk_size = total_proteins / num_threads;
     const int TOP_K = 20;
-    const int gep_val = GEP; 
-    const int gop_val = GOP;
     
     vector<priority_queue<Protein>> all_thread_results(num_threads);
     vector<thread> workers;
 
     for (unsigned int i = 0; i < num_threads; ++i) {
         int start_index = i * chunk_size;
-        int end_index = (i + 1) * chunk_size;
-
-        if (end_index > total_proteins) {
-            end_index = total_proteins;
-        }
+        int end_index = (i == num_threads - 1) ? total_proteins : (i + 1) * chunk_size;
 
         if (start_index >= end_index) continue;
             
-        workers.emplace_back(&Protein::computeSW, start_index, end_index, cref(query), cref(blosum), phrfile, psqfile, cref(pin), gep_val, gop_val, ref(all_thread_results[i]));
+        workers.emplace_back(&Protein::computeSW, start_index, end_index, cref(query), cref(blosum), phrfile, psqfile, cref(pin), GEP, GOP, ref(all_thread_results[i]));
     }
 
-    for (auto& worker : workers) if (worker.joinable()) worker.join();
-
-    priority_queue<Protein> final_pq;
-    for (auto& thread_pq : all_thread_results) {
-        while (!thread_pq.empty()) {
-            final_pq.push(move(thread_pq.top()));
-            thread_pq.pop();
-        }
+    for (auto& worker : workers) {
+        if (worker.joinable()) worker.join();
     }
+
+    
+    priority_queue<Protein> final_pq = mergeQueues(all_thread_results, TOP_K);
     
     vector<Protein> final_results;
-    for (int i = 0; i < TOP_K && !final_pq.empty(); ++i) {
+    while (!final_pq.empty()) {
         final_results.push_back(final_pq.top());
         final_pq.pop();
     }
+    
     return final_results;
 }
 
-void Protein::computeSWFromMemory(int start, int end, const query& query, const Blosum& blosum, const vector<char>& phr_data, const vector<char>& psq_data, const dataPin& pin, int GEP, int GOP, priority_queue<Protein>& thread_results) {
-    const int TOP_K = 20;
-
-    for (int i = start; i < end; ++i) {
-        Protein P;
-        P.id = read_header_from_memory(phr_data, pin.header_offsets[i], pin.header_offsets[i + 1]);
-        P.sequence = read_sequence_from_memory(psq_data, pin.sequence_offsets[i], pin.sequence_offsets[i + 1]);
-        P.sw_score = SWmatrix(query, P, blosum, GEP, GOP);
-        
-        if (thread_results.size() < TOP_K) {
-            thread_results.push(move(P));
-        } else if (P.sw_score > thread_results.top().sw_score) {
-            thread_results.pop(); 
-            thread_results.push(move(P));
-        }
-    }
-}
-
-vector<Protein> Protein::createVectorFromMemory(string& phr, string& psq, const dataPin& pin, const query& query, const Blosum& blosum, int GEP, int GOP) {
-    unsigned int num_threads = thread::hardware_concurrency();
-    int total_proteins = pin.numberOfprot;
-    int chunk_size = total_proteins / num_threads;
-    const int TOP_K = 20;
-    const int gep_val = GEP; 
-    const int gop_val = GOP;
-    
-    vector<priority_queue<Protein>> all_thread_results(num_threads);
-    vector<thread> workers;
-
-    vector<char> phr_data = read_all_bytes(phr);
-    vector<char> psq_data = read_all_bytes(psq);
-
-    for (unsigned int i = 0; i < num_threads; ++i) {
-        int start_index = i * chunk_size;
-        int end_index = (i + 1) * chunk_size;
-
-        if (end_index > total_proteins) {
-            end_index = total_proteins;
-        }
-        if (start_index >= end_index) continue;
-            
-        workers.emplace_back(&Protein::computeSWFromMemory, start_index, end_index, cref(query), cref(blosum), cref(phr_data), cref(psq_data), cref(pin), gep_val, gop_val, ref(all_thread_results[i]));
-    }
-
-    for (auto& worker : workers) if (worker.joinable()) worker.join();
-
-    priority_queue<Protein> final_pq;
-    for (auto& thread_pq : all_thread_results) {
-        while (!thread_pq.empty()) {
-            final_pq.push(move(thread_pq.top()));
-            thread_pq.pop();
-        }
-    }
-    
-    vector<Protein> final_results;
-    for (int i = 0; i < TOP_K && !final_pq.empty(); ++i) {
-        final_results.push_back(final_pq.top());
-        final_pq.pop();
-    }
-    return final_results;
-}
 
 void Protein::printbetter(vector<Protein>& v){
     for(int i = 0; i < 20 ; i++){
         cout << v[i].getid() << " " << v[i].getscore() << endl;
     }
+}
+
+priority_queue<Protein> Protein::mergeQueues(vector<priority_queue<Protein>>& all_queues, int top_k) {
+    priority_queue<Protein> final_pq;
+    
+    for (auto& thread_pq : all_queues) {
+        while (!thread_pq.empty()) {
+            final_pq.push(thread_pq.top());
+            thread_pq.pop();
+        }
+    }
+    
+    priority_queue<Protein> result;
+    for (int i = 0; i < top_k && !final_pq.empty(); ++i) {
+        result.push(final_pq.top());
+        final_pq.pop();
+    }
+    
+    return result;
 }

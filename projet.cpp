@@ -22,6 +22,7 @@ int main(int argc, char** argv){
     query query = getIdandsequence(fastafile);
     dataPin pindata = read_pin(pinfile);
     Blosum scoring(blosumfile);
+
     // vector<Protein> proteins = Protein::initProtlist(phrfile, psqfile, pindata); 
 
     // Protein fake_prot;
@@ -36,7 +37,7 @@ int main(int argc, char** argv){
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = end - start;
     cout << '\a';
-    std::cout << "vector crée en : " << elapsed.count() << " secondes\n";
+    std::cout << "vector crée en : " << elapsed.count() / 60 << " minutes\n";
 
     Protein::printbetter(best20Prot);
 

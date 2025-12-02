@@ -45,12 +45,9 @@ public:
 
     static void printbetter(vector<Protein>& v);
 
-    static void computeSW(int start, int end, const query& query, const Blosum& blosum, const string& phrfile, const string& psqfile, const dataPin& pin, int GEP, int GOP, priority_queue<Protein>& thread_results);
-    static vector<Protein> createVector(const string& phrfile, const string& psqfile, const dataPin& pin, const query& query, const Blosum& blosum, int GEP, int GOP);
-
-    static void computeSWFromMemory(int start, int end, const query& query, const Blosum& blosum, const vector<char>& phr_data, const vector<char>& psq_data, const dataPin& pin, int GEP, int GOP, priority_queue<Protein>& thread_results);
-    static vector<Protein> createVectorFromMemory(string& phr, string& psq, const dataPin& pin, const query& query, const Blosum& blosum, int GEP, int GOP);
-    
+    static void computeSW(int start, int end, const query& query,const Blosum& blosum, const string& phrfile, const string& psqfile, const dataPin& pin, int GEP, int GOP, priority_queue<Protein>& thread_results);
+    static vector<Protein> createVector(const string& phrfile, const string& psqfile, const dataPin& pin, const query& query,Blosum& blosum, int GEP, int GOP);
+    static priority_queue<Protein> mergeQueues(vector<priority_queue<Protein>>& all_queues, int top_k);
 };
 
 #endif

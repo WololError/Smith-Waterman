@@ -47,13 +47,12 @@ pair<string, string> GetProtGapped(vector<vector<int>>& H, const query& query, c
     return {rev_on_query, rev_on_prot};
 }
 
-int SWmatrix(const query& query, const Protein& prot, const Blosum& blosum, const int GOP, const int GEP) {
+int SWmatrix(const query& query, const Protein& prot,const Blosum& blosum, const int GOP, const int GEP) {
     
     string prot_sequence = prot.getseq();
     int prot_len = prot_sequence.size();
     int query_len = query.sequence.size();
     
-    if(prot.getid() == "sp|P22597|MB43_EHV4") return 0;
     vector<int> H_prev(query_len + 1, 0); 
     vector<int> H_curr(query_len + 1, 0); 
     vector<int> E_curr(query_len + 1, 0);

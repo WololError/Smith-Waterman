@@ -21,7 +21,4 @@ dataPin read_pin(const string& pin_path);
 string read_sequence(ifstream& file, const int a,const int b);
 string read_header(ifstream& file, const int a, const int b);
 
-vector<char> read_all_bytes(const string& filename);
-string read_sequence_from_memory(const vector<char>& psq_data, const int a, const int b);
-string read_header_from_memory(const vector<char>& phr_data, const int a, const int b);
 #endif

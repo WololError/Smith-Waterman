@@ -5,6 +5,8 @@
 #include "headers/fasta.h"
 #include "headers/blast.h"
 #include "headers/blosum.h"
+#include "headers/Protein.h"
+#include "headers/SmithWaterman.h"
 
 int main(int argc, char** argv){
 
@@ -17,13 +19,31 @@ int main(int argc, char** argv){
     int GOP = atoi(argv[4]); // GOP = Gap Open Penalty
     int GEP = atoi(argv[5]); // GEP = Gap Extension Penalty
 
-    Prot query = getIdandsequence(fastafile);
+    query query = getIdandsequence(fastafile);
     dataPin pindata = read_pin(pinfile);
     Blosum scoring(blosumfile);
-
     //scoring.printMatrix();
-    cout << scoring.Score('K', 'B') << endl;
-    cout << scoring.Score('W', 'W') << endl;
-    cout << scoring.Score('Z', 'T') << endl;
+    // vector<Protein> proteins = Protein::initProtlist(phrfile, psqfile, pindata); 
+
+    // Protein fake_prot;
+    // fake_prot.sequence = "MKPATGLWVWVSLLVAAGTVQPSDSQSVCAGTENKLSSLSDLEQQYRALRKYYENCEVVMGNLEITSIEHNRDLSFLRSVREVTGYVLVALNQFRYLPLENLRIIRGTKLYEDRYALAIFLNYRKDGNFGLQELGLKNLTEILNGGVYVDQNKFLCYADTIHWQDIVRNPWPSNLTLVSTNGSSGCGRCHKSCTGRCWGPTENHCQTLTRTVCAEQCDGRCYGPYVSDCCHRECAGGCSGPKDTDCFACMNFNDSGACVTQCPQTFVYNPTTFQLEHNFNAKYTYGAFCVKKCPHNFVVDSSSCVRACPSSKMEVEENGIKMCKPCTDICPKACDGIGTGSLMSAQTVDSSNIDKFINCTKINGNLIFLVTGIHGDPYNAIEAIDPEKLNVFRTVREITGFLNIQSWPPNMTDFSVFSNLVTIGGRVLYSGLSLLILKQQGITSLQFQSLKEISAGNIYITDNSNLCYYHTINWTTLFSTINQRIVIRDNRKAENCTAEGMVCNHLCSSDGCWGPGPDQCLSCRRFSRGRICIESCNLYDGEFREFENGSICVECDPQCEKMEDGLLTCHGPGPDNCTKCSHFKDGPNCVEKCPDGLQGANSFIFKYADPDRECHPCHPNCTQGCNGPTSHDCIYYPWTGHSTLPQHARTPLIAAGVIGGLFILVIVGLTFAVYVRRKSIKKKRALRRFLETELVEPLTPSGTAPNQAQLRILKETELKRVKVLGSGAFGTVYKGIWVPEGETVKIPVAIKILNETTGPKANVEFMDEALIMASMDHPHLVRLLGVCLSPTIQLVTQLMPHGCLLEYVHEHKDNIGSQLLLNWCVQIAKGMMYLEERRLVHRDLAARNVLVKSPNHVKITDFGLARLLEGDEKEYNADGGKMPIKWMALECIHYRKFTHQSDVWSYGVTIWELMTFGGKPYDGIPTREIPDLLEKGERLPQPPICTIDVYMVMVKCWMIDADSRPKFKELAAEFSRMARDPQRYLVIQGDDRMKLPSPNDSKFFQNLLDEEDLEDMMDAEEYLVPQAFNIPPPIYTSRARIDSNRSEIGHSPPPAYTPMSGNQFVYRDGGFAAEQGVSVPYRAPTSTIPEAPVAQGATAEIFDDSCCNGTLRKPVAPHVQEDSSTQRYSADPTVFAPERSPRGELDEEGYMTPMRDKPKQEYLNPVEENPFVSRRKNGDLQALDNPEYHNASNGPPKAEDEYVNEPLYLNTFANTLGKAEYLKNNILSMPEKAKKAFDNPDYWNHSLPPRSTLQHPDYLQEYSTKYFYKQNGRIRPIVAENPEYLSEFSLKPGTVLPPPPYRHRNTVV";
+    
+    // cout << SWmatrix(query, fake_prot, scoring, GOP, GEP) << endl;
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    vector<Protein> best20Prot = Protein::createVector(phrfile, psqfile, pindata, query,scoring,GEP,GOP);
+    //priority_queue<Protein> protlist = Protein::initProtqueue(query,scoring,phrfile, psqfile,pindata,GEP, GOP);
+
+    // for(int i = 0; i < 20; i++){
+    //     Protein P = protlist.top();
+    //     cout << P.getid() << " " << P.getscore() << endl;
+    //     protlist.pop();
+    // }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end - start;
+    Protein::printbetter(best20Prot);
+
     return 0;
 }

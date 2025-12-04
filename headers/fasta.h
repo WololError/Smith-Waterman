@@ -3,13 +3,16 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include "Protein.h"
 using namespace std;
+
 //structure qui représente une protéine
-struct Prot {
+struct query {
     string id;
     string sequence; //on stocke le séquence ds un string pr l'instant, reste à voir quelle structure sera intéressante pr l'algoritme de Smith-Waterman
 };
 
-Prot getIdandsequence(const string& files);
-
+query getIdandsequence(const string& files);
+void findquery(const query q, const vector<Protein>& v);
 #endif

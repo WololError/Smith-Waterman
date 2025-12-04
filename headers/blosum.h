@@ -8,24 +8,30 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <unordered_map>
+#include <sstream>
+#include <iostream>
 using namespace std;
 
 class Blosum {
 
 private:
     vector<vector<int>> matrix;
-    map<char, int> indexMap;
+    
     int size;
-
+    unordered_map<char, int> indexMap;
     int parseBlosumSize(const string& blosumfile) const;
-    map<char, int> parseIndexMap(const string& blosumfile) const;
+    unordered_map<char, int> parseIndexMap(const string& blosumfile) const;
+    static vector<int> linetovector(string& line);
 ;
 public:
     Blosum(const string& blosumfile);
     int Score(char acide1, char acide2) const;
     void printMatrix() const;
+    void printIndexMap() const;
+    
 };
 
-vector<int> linetovector(string& line, int number);
+
 
 #endif

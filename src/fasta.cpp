@@ -1,11 +1,11 @@
 #include "../headers/fasta.h"
 //fonction qui lit une fichier fasta qui ne contient qu'un seul prot et qui renvoie une objet de la structure Prot
 //qui servira à la représenter
-Prot getIdandsequence(const string& filefasta){
+query getIdandsequence(const string& filefasta){
     ifstream fichier(filefasta);
     
     if (!fichier.good()) {
-        std::cerr << "fichier non ouvert" << std::endl;
+        std::cerr << "fichier fasta non ouvert" << std::endl;
         return {"",""};
     }
 
@@ -21,9 +21,17 @@ Prot getIdandsequence(const string& filefasta){
         }
     }
     fichier.close();
-    sequence = sequence.substr(0, sequence.find(' '));
-    Prot query;
+    query query;
     query.id = id;
     query.sequence = sequence;
     return query;
+}
+
+void findquery(const query q, const vector<Protein>& v){
+    for(long unsigned int i = 0; i < v.size(); i++){
+        if (q.sequence == v[i].getseq()){
+            cout << v[i].getid() << endl; 
+            break;
+        }
+    }
 }

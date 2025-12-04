@@ -18,7 +18,8 @@ Blosum::Blosum(const string& blosumfile) {
             continue; 
         }
         else {
-            this->matrix[i] = linetovector(line,this->size);
+            line[0] = ' ';
+            this->matrix[i] = linetovector(line);
             i++;
         }
     } 
@@ -74,49 +75,18 @@ unordered_map<char, int> Blosum::parseIndexMap(const string& blosumfile) const{
     return map;
 }
 
-vector<int> Blosum::linetovector(string& line, int number) {
-    vector<int> vec(number);
-    int minus = -1;
+vector<int> Blosum::linetovector(string& line) {
 
-    int i = 0;
-    int v = 0; 
+
+    istringstream iss(line);
 
     int num;
+    vector<int> vectorofnum;
 
-    while (i < line.size() && v < number) {
+    while (iss >> num)
+        vectorofnum.push_back(num);
 
-        if (line[i] == ' ' || isalpha(line[i]) || line[i] == '*') {
-            i++; 
-            continue; 
-        }
-
-        if (line[i] == '-') {
-            if(isdigit(line[i+2])){
-                num = minus * (line[i+1] - '0') * 10 + (line[i+2] - '0');
-                i = i + 3;
-            }
-            else{
-            num = minus * (line[i + 1] - '0');
-            i = i + 2;
-            }
-            vec[v] = num;
-            v++;
-        }
-
-        else if (isdigit(line[i])) { 
-            if (isdigit(line[i+1])){
-                num = (line[i] - '0') * 10 + (line[i+1] - '0');
-                i = i + 2;
-            }
-            else {
-            num = line[i] - '0';
-            i++;
-            }
-            vec[v] = num;
-            v++;
-        }
-    }
-    return vec;
+    return vectorofnum;
 }
 
 void Blosum::printMatrix() const {

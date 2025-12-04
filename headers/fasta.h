@@ -14,5 +14,5 @@ struct query {
 };
 
 query getIdandsequence(const string& files);
-void findquery(const query q, const vector<Protein> prot);
+void findquery(const query q, const vector<Protein>& v);
 #endif

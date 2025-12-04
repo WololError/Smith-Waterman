@@ -50,7 +50,7 @@ pair<string, string> GetProtGapped(vector<vector<int>>& H, const query& query, c
 #include "../headers/SmithWaterman.h"
 #include <iomanip>
 
-int SWmatrix(const query& query, const Protein& prot,const Blosum& blosum, const int GOP, const int GEP) {
+int SWmatrix(const query& query, const Protein& prot,const Blosum& blosum, const int GEP, const int GOP) {
     
     string prot_sequence = prot.getseq();
     int prot_len = prot_sequence.size();

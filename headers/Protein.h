@@ -28,8 +28,11 @@ public:
     string getid() const;
     int getscore() const;
     
-    bool operator< (const Protein &other) const {
-        return sw_score < other.sw_score;
+bool operator< (const Protein &other) const {
+        if (sw_score != other.sw_score) {
+            return sw_score < other.sw_score;
+        }
+        return id > other.id;
     }
 
     bool operator> (const Protein &other) const {

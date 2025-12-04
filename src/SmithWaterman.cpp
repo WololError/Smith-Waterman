@@ -1,56 +1,7 @@
 #include "../headers/SmithWaterman.h"
 #include <iomanip>
 
-pair<string, string> GetProtGapped(vector<vector<int>>& H, const query& query, const Protein& prot, const Blosum& blosum, int i, int j, int gap_penalty)
-{
-    /*Cette fonction permet de print les alignements avec les tirets qui représentent les gaps, permet principalement de debugger*/
-
-    // Traceback du meilleur alignement, i et j correspondent au max.
-    string prot_sequence = prot.getseq();
-    string rev_on_query; // On stocke les caractères en ordre inverse
-    string rev_on_prot;
-    bool traceback = true;
-    
-    while (H[i][j] > 0 && i > 0 && j > 0 )
-    {
-        if (H[i][j] == H[i-1][j-1] + blosum.Score(query.sequence[i-1], prot_sequence[j-1]))
-        {
-            rev_on_query = rev_on_query + query.sequence[i-1];
-            rev_on_prot = rev_on_prot + prot_sequence[j-1];
-            i = i - 1;
-            j = j - 1;
-            continue;
-        }
-        if (H[i][j] == H[i-1][j] - gap_penalty)
-        {
-            rev_on_query = rev_on_query + query.sequence[i-1];
-            rev_on_prot = rev_on_prot + "-";
-            i = i - 1;
-            continue;
-        }
-        if (H[i][j] == H[i][j-1] - gap_penalty)
-        {
-            rev_on_query = rev_on_query + "-";
-            rev_on_prot = rev_on_prot + prot_sequence[j-1];
-            j = j - 1;
-            continue;
-        }
-        else
-        {
-            break;
-        }
-    }
-
-    reverse(rev_on_query.begin(), rev_on_query.end()); // On inverse prcq c'était dans le mauvais sens
-    reverse(rev_on_prot.begin(), rev_on_prot.end());
-
-    return {rev_on_query, rev_on_prot};
-}
-
-#include "../headers/SmithWaterman.h"
-#include <iomanip>
-
-int SWmatrix(const query& query, const Protein& prot,const Blosum& blosum, const int GEP, const int GOP) {
+int SWmatrix(const query& query, const Protein& prot,const Blosum& blosum, const int GOP, const int GEP) {
     
     string prot_sequence = prot.getseq();
     int prot_len = prot_sequence.size();

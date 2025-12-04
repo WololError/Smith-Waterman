@@ -81,7 +81,7 @@ void Protein::computeSW(int start, int end, const query& query, const Blosum& bl
         Protein P;
         P.id = read_header(phr, pin.header_offsets[i], pin.header_offsets[i + 1]);
         P.sequence = read_sequence(psq, pin.sequence_offsets[i], pin.sequence_offsets[i + 1]);
-        P.sw_score = SWmatrix(query, P, blosum, GEP, GOP);
+        P.sw_score = SWmatrix(query, P, blosum, GOP, GEP);
         if (thread_results.size() < TOP_K) {
             thread_results.push(move(P));
         } else if (P.sw_score > thread_results.top().sw_score) {

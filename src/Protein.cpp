@@ -2,8 +2,6 @@
 #include "../headers/blast.h"
 #include "../headers/SmithWaterman.h"
 
-int m = 573661;
-int c = 0;
 vector<Protein> Protein::initProtlist(const string& phrfile, const string& psqfile, const dataPin pin){
     
     ifstream phr(phrfile, ios::binary);
@@ -53,7 +51,7 @@ priority_queue<Protein> Protein::initProtqueue(const query& q, Blosum& blosum, s
         Protein P;
         P.id = read_header(phr, pin.header_offsets[i],pin.header_offsets[i + 1]);
         P.sequence = read_sequence(psq, pin.sequence_offsets[i], pin.sequence_offsets[i + 1]);
-        P.sw_score = SWmatrix(q, P, blosum, GEP, GOP);
+        P.sw_score = SWmatrix(q, P, blosum, GOP, GEP);
         pq.push(P);
     }
 

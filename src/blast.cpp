@@ -105,7 +105,7 @@ string read_sequence(ifstream& file, const int a,const int b){
     for(int i = 0; i < size - 1; i++){
         file.read(&byte, 1);
         value = static_cast<int>(static_cast<unsigned char>(byte));
-        sequence += Aminoacid[value];
+        sequence.push_back(Aminoacid[value]);
     }
     return sequence;
 }
@@ -123,9 +123,8 @@ string read_header(ifstream& file, const int a, const int b) {
             // longueur du texte (1 octet)
             int length = buffer[i + 1];
             string text;
-            for (int j = 0; j < length; j++) {
-                text += static_cast<char>(buffer[i + j + 2]);
-            }
+            header.append(reinterpret_cast<char*>(&buffer[i + 2]), length);
+            header.push_back(' ');
             // on ajoute ce texte à la sortie
             header += text + " ";
         }

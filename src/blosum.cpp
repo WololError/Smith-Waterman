@@ -1,4 +1,6 @@
 #include "../headers/blosum.h"
+
+
 /* Construit un objet Blosum à partir d’un fichier BLOSUM.
  * Le constructeur initialise entièrement l’objet en :
  *  - déterminant la dimension de la matrice,

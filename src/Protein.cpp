@@ -1,5 +1,4 @@
 #include "../headers/Protein.h"
-#include "../headers/blast.h"
 #include "../headers/SmithWaterman.h"
 
 

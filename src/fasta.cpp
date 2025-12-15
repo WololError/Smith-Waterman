@@ -1,5 +1,6 @@
 #include "../headers/fasta.h"
 
+
 /* Retourne la séquence de la protéine requête.
  *
  * @return Référence constante vers la séquence.

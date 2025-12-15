@@ -1,5 +1,6 @@
 #include "../headers/SmithWaterman.h"
 
+
 /* Calcule le score d’alignement local Smith-Waterman entre une séquence requête
  * et une protéine donnée.
  * L’algorithme utilise une matrice de substitution BLOSUM ainsi que des pénalités

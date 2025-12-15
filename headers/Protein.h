@@ -7,11 +7,11 @@
 #include <thread>
 
 #include "blast.h"
-#include "blosum.h"
 
 using namespace std;
 
 class query;
+class Blosum;
 
 class Protein{
 

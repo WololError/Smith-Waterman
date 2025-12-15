@@ -2,6 +2,7 @@
 #include "../headers/blast.h"
 #include "../headers/SmithWaterman.h"
 
+
 /* Initialise la liste complète des protéines à partir des fichiers
  * .phr et .psq. Les en-têtes et les séquences sont lus à l’aide
  * des offsets fournis par l’objet dataPin.
@@ -107,7 +108,7 @@ priority_queue<Protein> Protein::initProtqueue(const string& phrfile, const stri
 
 
 
-/* Calcule les scores Smith-Waterman pour un intervalle de protéines.
+/* Calcule les scores Smith-Waterman pour un intervalle de protéines et les stock dans une Priority_queue qui lui est attribué.
  * Cette fonction est destinée à être exécutée dans un thread.
  * Seules les TOP_K meilleures protéines sont conservées localement.
  *

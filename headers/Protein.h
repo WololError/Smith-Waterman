@@ -5,15 +5,13 @@
 #include <vector>
 #include <queue>
 #include <thread>
-#include <mutex>
 
 #include "blast.h"
 #include "blosum.h"
 
-struct query;
-
-
 using namespace std;
+
+class query;
 
 class Protein{
 
